@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Ultra Soundboard | Made by UG</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="discord-dark">
+    <!-- Ambient Background Lighting & Particles -->
+    <div class="ambient-glow bg-glow-1"></div>
+    <div class="ambient-glow bg-glow-2"></div>
+    <div class="particles-container" id="particlesContainer"></div>
+
+    <!-- App Header & Navigation Bar -->
+    <header class="app-header">
+        <div class="logo-container">
+            <div class="ug-header-logo-badge">
+                <span>UG</span>
+            </div>
+            <div class="logo-text">
+                <span class="brand-title">ULTRA<span class="highlight">SOUND</span></span>
+                <span class="ug-badge"><i class="fa-solid fa-code"></i> Made by UG</span>
+            </div>
+        </div>
+
+        <nav class="main-nav">
+            <button class="nav-btn active" data-tab="welcome" id="navWelcomeBtn">
+                <i class="fa-solid fa-house"></i>
+                <span>Welcome</span>
+            </button>
+            <button class="nav-btn" data-tab="board" id="navBoardBtn">
+                <i class="fa-solid fa-grip"></i>
+                <span>Play Soundboard</span>
+                <span class="sound-counter-badge" id="soundCountBadge">0</span>
+            </button>
+            <button class="nav-btn nav-btn-primary" data-tab="add" id="navAddBtn">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Add Sound</span>
+            </button>
+            <button class="nav-btn" data-tab="guide" id="navGuideBtn">
+                <i class="fa-solid fa-book-open"></i>
+                <span>User Guide</span>
+            </button>
+            <button class="nav-btn nav-btn-admin" id="adminNavBtn">
+                <i class="fa-solid fa-lock" id="adminLockIcon"></i>
+                <span id="adminBtnText">Admin Mode</span>
+            </button>
+        </nav>
+
+        <div class="header-actions">
+            <!-- Mic Passthrough Routing Mode Toggle -->
+            <div class="mic-routing-container">
+                <button id="micModeBtn" class="mic-mode-btn sound-only" title="Click to toggle Dual Voice mode">
+                    <i class="fa-solid fa-microphone-slash" id="micModeIcon"></i>
+                    <span id="micModeText">Sound Only Mic</span>
+                </button>
+            </div>
+
+            <!-- Output Device Selection (VB-Cable / Speaker) -->
+            <div class="device-selector-wrapper">
+                <i class="fa-solid fa-headphones" style="color: #00b0f4;"></i>
+                <select id="audioOutputSelect" class="device-select" title="Select Audio Output Device (e.g. VB-Cable)">
+                    <option value="default">🔊 Default Audio Output</option>
+                </select>
+                <button type="button" id="installDriverBtn" class="install-driver-icon-btn" title="Download & Install VB-Audio Cable Driver">
+                    <i class="fa-solid fa-download"></i>
+                </button>
+                <button type="button" id="vbGuideBtn" class="vb-guide-icon-btn" title="VB-Audio Cable Setup Guide">
+                    <i class="fa-solid fa-circle-question"></i>
+                </button>
+            </div>
+
+            <div class="master-volume-control">
+                <i class="fa-solid fa-volume-high" id="volumeIcon"></i>
+                <input type="range" id="masterVolume" min="0" max="100" value="80" class="volume-slider"
+                    title="Master Volume">
+                <span id="volumeValue">80%</span>
+            </div>
+            <button id="stopAllBtn" class="stop-all-btn" title="Stop All Audio">
+                <i class="fa-solid fa-hand"></i>
+                <span>Stop All</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="content-wrapper">
+
+        <!-- ==================== SECTION 1: WELCOME SCREEN ==================== -->
+        <section id="welcomeSection" class="view-section active">
+            <div class="welcome-hero">
+
+                <div class="hero-badge-animated">
+                    <span class="pulse-dot"></span> DISCORD SOUNDBOARD PRO V3.0 ONLINE
+                </div>
+
+                <h1 class="welcome-title">
+                    <span class="title-gradient-animated">Welcome to Sound Board</span>
+                </h1>
+
+                <div class="creator-tagline">
+                    <span class="creator-badge glow-pulse-badge">
+                        <i class="fa-solid fa-bolt"></i> Made by <strong class="ug-glow-name">UG</strong>
+                    </span>
+                    <span class="hero-subtext">The ultimate Discord-style soundboard with World Share & Private Only-Me
+                        collections.</span>
+                </div>
+
+                <!-- Action Cards Grid on Welcome Page -->
+                <div class="welcome-action-cards">
+                    <div class="action-card add-card" id="heroAddBtn">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3>Add New Sound</h3>
+                            <p>Upload audio files, tick "World Share" to publish for everyone online or uncheck for
+                                private use.</p>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="action-card play-card" id="heroPlayBtn">
+                        <div class="card-icon">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3>Play Soundboard</h3>
+                            <p>Switch between 🌍 World Shared Sounds and 🔒 Only Me sounds. Instant trigger & keybinding
+                                shortcuts.</p>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Highlight Grid -->
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="fa-solid fa-earth-americas"></i>
+                        <h4>World Share Cloud</h4>
+                        <p>Share sound effects globally with all visitors online.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <h4>Only Me (Private)</h4>
+                        <p>Keep your private sounds stored safely in local storage.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-download"></i>
+                        <h4>Import World to Local</h4>
+                        <p>One-click copy any World sound to your private local board.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-user-gear"></i>
+                        <h4>Admin Panel Lock</h4>
+                        <p>Protected Admin page for master sound editing & moderation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== SECTION 2: ADD SOUND PAGE ==================== -->
+        <section id="addSection" class="view-section">
+            <div class="page-header">
+                <h2><i class="fa-solid fa-circle-plus"></i> Add New Sound</h2>
+                <p>Upload any audio file. Tick <strong>World Share</strong> to make it public for everyone online, or
+                    untick to keep it private in <strong>Only Me</strong>.</p>
+            </div>
+
+            <div class="add-sound-container">
+                <!-- Drag and Drop Dropzone -->
+                <div class="dropzone" id="dropzone">
+                    <input type="file" id="audioFileInput" accept="audio/*" class="file-input-hidden">
+                    <div class="dropzone-content">
+                        <div class="dropzone-icon">
+                            <i class="fa-solid fa-file-arrow-up"></i>
+                        </div>
+                        <h3>Drag & Drop Sound File Here</h3>
+                        <p>Supports MP3, WAV, OGG, M4A, FLAC, WEBM & all audio formats</p>
+                        <button type="button" class="btn btn-secondary" id="browseFileBtn">
+                            <i class="fa-solid fa-folder-open"></i> Browse Audio File
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Form Configuration Section (Shown when file selected) -->
+                <div class="sound-config-form" id="soundConfigForm">
+                    <div class="audio-preview-bar" id="audioPreviewBar">
+                        <button type="button" class="preview-play-btn" id="previewPlayBtn">
+                            <i class="fa-solid fa-play"></i>
+                        </button>
+                        <div class="preview-details">
+                            <span class="preview-filename" id="previewFilename">audio_sample.mp3</span>
+                            <span class="preview-filesize" id="previewFilesize">0.0 MB</span>
+                        </div>
+                        <audio id="audioPreviewElement" style="display:none;"></audio>
+                    </div>
+
+                    <!-- World Share Checkbox Option (Default Checked) -->
+                    <div class="world-share-option-card">
+                        <label class="toggle-checkbox-wrapper" for="worldShareCheckbox">
+                            <input type="checkbox" id="worldShareCheckbox" checked>
+                            <span class="checkbox-custom"></span>
+                            <div class="toggle-label-content">
+                                <strong><i class="fa-solid fa-earth-americas" style="color:#00b0f4;"></i> World Share
+                                    (Public to Everyone)</strong>
+                                <span>Checked = Visible to all users online. Unchecked = Stored in "Only Me" local
+                                    storage.</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="form-grid">
+                        <!-- Sound Name Edit Input -->
+                        <div class="form-group">
+                            <label for="soundNameInput">
+                                <i class="fa-solid fa-pen-to-square"></i> Sound Display Name
+                            </label>
+                            <input type="text" id="soundNameInput" placeholder="Enter sound name..." maxlength="30">
+                            <small class="form-hint">Auto-generated from filename. You can edit it!</small>
+                        </div>
+
+                        <!-- Emoji Selection -->
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-icons"></i> Choose Emoji</label>
+                            <div class="selected-emoji-display">
+                                <span class="current-emoji" id="currentEmojiDisplay">🔊</span>
+                                <input type="text" id="customEmojiInput" placeholder="Or type any emoji..."
+                                    maxlength="5">
+                            </div>
+
+                            <div class="emoji-picker-grid" id="emojiPickerGrid">
+                                <!-- Preset Discord style emojis injected dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Button Color Theme -->
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-palette"></i> Button Accent Color</label>
+                            <div class="color-picker-grid" id="colorPickerGrid">
+                                <div class="color-option active" data-color="blurple" style="background: #5865f2;">
+                                </div>
+                                <div class="color-option" data-color="green" style="background: #23a55a;"></div>
+                                <div class="color-option" data-color="yellow" style="background: #fee75c;"></div>
+                                <div class="color-option" data-color="fuchsia" style="background: #eb459e;"></div>
+                                <div class="color-option" data-color="red" style="background: #f23f43;"></div>
+                                <div class="color-option" data-color="cyan" style="background: #00b0f4;"></div>
+                                <div class="color-option" data-color="orange" style="background: #f97316;"></div>
+                                <div class="color-option" data-color="purple" style="background: #a855f7;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Optional Keybinding -->
+                        <div class="form-group">
+                            <label for="shortcutInput"><i class="fa-solid fa-keyboard"></i> Hotkey Shortcut
+                                (Optional)</label>
+                            <input type="text" id="shortcutInput" placeholder="Click and press a key (e.g. '1', 'A')"
+                                readonly>
+                            <button type="button" class="btn-text-sm" id="clearShortcutBtn">Clear Key</button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelAddBtn">
+                            <i class="fa-solid fa-xmark"></i> Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary btn-glow" id="saveSoundBtn">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Save Sound
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== SECTION 3: PLAY SOUNDBOARD PAGE ==================== -->
+        <section id="boardSection" class="view-section">
+            <div class="soundboard-header-bar">
+                <div class="search-and-filter">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="soundSearchInput" placeholder="Search sounds by name or emoji...">
+                    </div>
+
+                    <!-- World Share vs Only Me Section Tabs -->
+                    <div class="board-category-tabs">
+                        <button class="cat-tab active" data-category="world" id="tabCatWorld">
+                            <i class="fa-solid fa-earth-americas" style="color: #00b0f4;"></i> World Share (<span
+                                id="cntWorld">0</span>)
+                        </button>
+                        <button class="cat-tab" data-category="local" id="tabCatLocal">
+                            <i class="fa-solid fa-lock" style="color: #23a55a;"></i> Only Me (<span
+                                id="cntLocal">0</span>)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="board-action-buttons">
+                    <div class="mode-toggle-group">
+                        <button id="overlapModeBtn" class="mode-btn active" title="Allow overlapping sound play">
+                            <i class="fa-solid fa-layer-group"></i> Multi
+                        </button>
+                        <button id="singleModeBtn" class="mode-btn" title="Stop current sound when new sound plays">
+                            <i class="fa-solid fa-play-pause"></i> Solo
+                        </button>
+                    </div>
+                    <button class="btn btn-primary btn-sm" id="quickAddNavBtn">
+                        <i class="fa-solid fa-plus"></i> Add Sound
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Sound Visualizer Bar -->
+            <div class="now-playing-bar" id="nowPlayingBar">
+                <div class="now-playing-info">
+                    <div class="equalizer-waves">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <span class="playing-label">Now Playing:</span>
+                    <strong id="nowPlayingTitle">None</strong>
+                </div>
+                <button class="btn-text-danger" id="nowPlayingStopBtn">
+                    <i class="fa-solid fa-square"></i> Stop
+                </button>
+            </div>
+
+            <!-- Main Sound Buttons Grid Container -->
+            <div class="sound-grid" id="soundGrid">
+                <!-- Sound cards will be dynamically rendered here -->
+            </div>
+
+            <!-- Empty State Display -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon"><i class="fa-solid fa-compact-disc"></i></div>
+                <h3 id="emptyStateTitle">No sounds found!</h3>
+                <p id="emptyStateSub">Click below to upload a sound effect or switch categories.</p>
+                <div class="empty-actions">
+                    <button class="btn btn-primary" id="emptyAddBtn">
+                        <i class="fa-solid fa-plus"></i> Add Sound
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== SECTION 4: USER GUIDE PAGE ==================== -->
+        <section id="guideSection" class="view-section">
+
+            <!-- Language Selection Hero -->
+            <div class="guide-hero-header">
+                <div class="guide-hero-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+                <h2 class="guide-hero-title">User <span class="guide-title-glow">Guide</span></h2>
+                <p class="guide-hero-sub">Choose your language to view the complete step-by-step manual</p>
+
+                <!-- Language Picker Cards -->
+                <div class="guide-lang-picker" id="guideLangPicker">
+                    <button class="guide-lang-card active" data-lang="bn" id="guideLangBn">
+                        <span class="lang-flag">🇧🇩</span>
+                        <span class="lang-name">বাংলা</span>
+                        <span class="lang-sub">Bengali</span>
+                    </button>
+                    <button class="guide-lang-card" data-lang="en" id="guideLangEn">
+                        <span class="lang-flag">🇬🇧</span>
+                        <span class="lang-name">English</span>
+                        <span class="lang-sub">English</span>
+                    </button>
+                    <button class="guide-lang-card" data-lang="hi" id="guideLangHi">
+                        <span class="lang-flag">🇮🇳</span>
+                        <span class="lang-name">हिन्दी</span>
+                        <span class="lang-sub">Hindi</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== BENGALI GUIDE ===== -->
+            <div class="guide-body active" id="guideBn">
+                <div class="guide-steps-grid">
+
+                    <div class="guide-step-card">
+                        <div class="guide-step-num">১</div>
+                        <div class="guide-step-icon" style="background: linear-gradient(135deg,#23a55a,#1a7a44)"><i
+                                class="fa-solid fa-cloud-arrow-up"></i></div>
+                        <div class="guide-step-content">
+                            <h3>নতুন সাউন্ড যোগ করুন</h3>
+                            <ul class="guide-list">
+                                <li><i class="fa-solid fa-arrow-right"></i> উপরের নেভবারে <strong>Add Sound</strong>
+                                    ট্যাবে ক্লিক করুন।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> অডিও ফাইল (MP3, WAV, OGG, FLAC) ড্র্যাগ করুন
+                                    বা <strong>Browse Audio File</strong> চাপুন।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> ফাইলের নাম স্বয়ংক্রিয়ভাবে চলে আসবে — চাইলে
+                                    এডিট করুন।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> ইমোজি 🎮 এবং কালার থিম বেছে নিন।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> হটকি সেট করুন (যেমন: <kbd>1</kbd>
+                                    <kbd>A</kbd> <kbd>Space</kbd>)।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> অবশেষে <strong>Save Sound</strong> বাটনে
+                                    ক্লিক করুন।</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="guide-step-num">২</div>
+                        <div class="guide-step-icon" style="background: linear-gradient(135deg,#5865f2,#3b46c4)"><i
+                                class="fa-solid fa-earth-americas"></i></div>
+                        <div class="guide-step-content">
+                            <h3>World Share vs Only Me</h3>
+                            <ul class="guide-list">
+                                <li><i class="fa-solid fa-globe" style="color:#00b0f4"></i> <strong
+                                        style="color:#00b0f4">World Share ✅ চেক করা:</strong> সাউন্ড সবাই দেখতে ও বাজাতে
+                                    পারবে।</li>
+                                <li><i class="fa-solid fa-lock" style="color:#23a55a"></i> <strong
+                                        style="color:#23a55a">Unchecked ☐:</strong> সাউন্ড শুধু আপনার ব্রাউজারে প্রাইভেট
+                                    থাকবে (Only Me)।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> Play Soundboard পেজে <strong>World
+                                        Share</strong> এবং <strong>Only Me</strong> আলাদা ট্যাবে দেখাবে।</li>
+                                <li><i class="fa-solid fa-download" style="color:#fee75c"></i> World এর সাউন্ড আপনার
+                                    লোকালে নিতে পারবেন <strong>Import</strong> বাটনে।</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="guide-step-num">৩</div>
+                        <div class="guide-step-icon" style="background: linear-gradient(135deg,#00b0f4,#0077aa)"><i
+                                class="fa-solid fa-headphones"></i></div>
+                        <div class="guide-step-content">
+                            <h3>VB-Cable দিয়ে Discord/Game-এ পাঠান</h3>
+                            <ul class="guide-list">
+                                <li><i class="fa-solid fa-download"></i> ফ্রি ড্রাইভার ডাউনলোড: <a
+                                        href="https://vb-audio.com/Cable/" target="_blank"
+                                        style="color:var(--cyan);text-decoration:underline">vb-audio.com/Cable</a></li>
+                                <li><i class="fa-solid fa-arrow-right"></i> হেডারের Output ড্রপডাউন → <strong
+                                        style="color:var(--cyan)">CABLE Input</strong> সিলেক্ট করুন।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> Discord/Game সেটিংসে Microphone → <strong
+                                        style="color:var(--cyan)">CABLE Output</strong> সেট করুন।</li>
+                            </ul>
+                            <div class="guide-mode-cards">
+                                <div class="guide-mode-pill red"><i class="fa-solid fa-microphone-slash"></i> Sound Only
+                                    Mic — শুধু সাউন্ড যাবে, আপনার গলা বন্ধ</div>
+                                <div class="guide-mode-pill green"><i class="fa-solid fa-microphone"></i> Dual Voice +
+                                    Sound — আপনার গলা + সাউন্ড একসাথে!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ===== ENGLISH GUIDE ===== -->
+            <div class="guide-body" id="guideEn">
+                <div class="guide-steps-grid">
+
+                    <div class="guide-step-card">
+                        <div class="guide-step-num">1</div>
+                        <div class="guide-step-icon" style="background: linear-gradient(135deg,#23a55a,#1a7a44)"><i
+                                class="fa-solid fa-cloud-arrow-up"></i></div>
+                        <div class="guide-step-content">
+                            <h3>Add a New Sound</h3>
+                            <ul class="guide-list">
+                                <li><i class="fa-solid fa-arrow-right"></i> Click the <strong>Add Sound</strong> tab in
+                                    the top navbar.</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> Drag & drop any audio file (MP3, WAV, OGG,
+                                    FLAC) or click <strong>Browse Audio File</strong>.</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> Sound name is auto-extracted from filename —
+                                    edit freely.</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> Pick an Emoji 🎮 and a color theme.</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> Assign a hotkey shortcut (e.g. <kbd>1</kbd>
+                                    <kbd>A</kbd> <kbd>Space</kbd>).</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> Click <strong>Save Sound</strong> to finish.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="guide-step-num">2</div>
+                        <div class="guide-step-icon" style="background: linear-gradient(135deg,#5865f2,#3b46c4)"><i
+                                class="fa-solid fa-earth-americas"></i></div>
+                        <div class="guide-step-content">
+                            <h3>World Share vs Only Me</h3>
+                            <ul class="guide-list">
+                                <li><i class="fa-solid fa-globe" style="color:#00b0f4"></i> <strong
+                                        style="color:#00b0f4">World Share ✅ Checked:</strong> Sound is public — everyone
+                                    online can see & play it.</li>
+                                <li><i class="fa-solid fa-lock" style="color:#23a55a"></i> <strong
+                                        style="color:#23a55a">Unchecked ☐:</strong> Sound is private in your local
+                                    browser only (Only Me).</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> Play Soundboard page has separate
+                                    <strong>World</strong> and <strong>Only Me</strong> tabs.</li>
+                                <li><i class="fa-solid fa-download" style="color:#fee75c"></i> Import any World sound to
+                                    your local library using the <strong>Import</strong> button.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="guide-step-num">3</div>
+                        <div class="guide-step-icon" style="background: linear-gradient(135deg,#00b0f4,#0077aa)"><i
+                                class="fa-solid fa-headphones"></i></div>
+                        <div class="guide-step-content">
+                            <h3>Route Audio to Discord / Game (VB-Cable)</h3>
+                            <ul class="guide-list">
+                                <li><i class="fa-solid fa-download"></i> Download free driver: <a
+                                        href="https://vb-audio.com/Cable/" target="_blank"
+                                        style="color:var(--cyan);text-decoration:underline">vb-audio.com/Cable</a></li>
+                                <li><i class="fa-solid fa-arrow-right"></i> In the header Output dropdown → select
+                                    <strong style="color:var(--cyan)">CABLE Input</strong>.</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> In Discord/Game settings set Microphone →
+                                    <strong style="color:var(--cyan)">CABLE Output</strong>.</li>
+                            </ul>
+                            <div class="guide-mode-cards">
+                                <div class="guide-mode-pill red"><i class="fa-solid fa-microphone-slash"></i> Sound Only
+                                    Mic — Mutes your real mic, only soundboard goes through</div>
+                                <div class="guide-mode-pill green"><i class="fa-solid fa-microphone"></i> Dual Voice +
+                                    Sound — Your voice & soundboard together!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="guide-step-num">4</div>
+                        <div class="guide-step-icon" style="background: linear-gradient(135deg,#fee75c,#c4a800)"><i
+                                class="fa-solid fa-shield-halved"></i></div>
+                        <div class="guide-step-content">
+                            <h3>Admin Mode — Master Control</h3>
+                            <ul class="guide-list">
+                                <li><i class="fa-solid fa-lock"></i> Click the <strong>Admin Mode</strong> button in the
+                                    header.</li>
+                                <li><i class="fa-solid fa-key"></i> Default passcode: <kbd>UG1</kbd> — change it after
+                                    first login.</li>
+                                <li><i class="fa-solid fa-crown" style="color:#fee75c"></i> Admin can Edit & Delete
+                                    World sounds freely.</li>
+                                <li><i class="fa-solid fa-ban" style="color:#f23f43"></i> Regular users cannot edit
+                                    World sounds — protected!</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ===== HINDI GUIDE ===== -->
+            <div class="guide-body" id="guideHi">
+                <div class="guide-steps-grid">
+
+                    <div class="guide-step-card">
+                        <div class="guide-step-num">१</div>
+                        <div class="guide-step-icon" style="background: linear-gradient(135deg,#23a55a,#1a7a44)"><i
+                                class="fa-solid fa-cloud-arrow-up"></i></div>
+                        <div class="guide-step-content">
+                            <h3>नया साउंड जोड़ें</h3>
+                            <ul class="guide-list">
+                                <li><i class="fa-solid fa-arrow-right"></i> ऊपर नेवबार में <strong>Add Sound</strong>
+                                    टैब पर क्लिक करें।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> ऑडियो फ़ाइल (MP3, WAV, OGG, FLAC) ड्रैग करें
+                                    या <strong>Browse Audio File</strong> दबाएं।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> फ़ाइल नाम से साउंड नाम अपने आप आएगा — जरूरत
+                                    हो तो बदलें।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> इमोजी 🎮 और कलर थीम चुनें।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> हॉटकी सेट करें (जैसे: <kbd>1</kbd>
+                                    <kbd>A</kbd> <kbd>Space</kbd>)।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> <strong>Save Sound</strong> बटन दबाएं।</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="guide-step-num">२</div>
+                        <div class="guide-step-icon" style="background: linear-gradient(135deg,#5865f2,#3b46c4)"><i
+                                class="fa-solid fa-earth-americas"></i></div>
+                        <div class="guide-step-content">
+                            <h3>World Share बनाम Only Me</h3>
+                            <ul class="guide-list">
+                                <li><i class="fa-solid fa-globe" style="color:#00b0f4"></i> <strong
+                                        style="color:#00b0f4">World Share ✅ चेक:</strong> साउंड सभी ऑनलाइन यूज़र देख व
+                                    बजा सकेंगे।</li>
+                                <li><i class="fa-solid fa-lock" style="color:#23a55a"></i> <strong
+                                        style="color:#23a55a">Unchecked ☐:</strong> साउंड सिर्फ आपके ब्राउज़र में
+                                    प्राइवेट रहेगा (Only Me)।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> Play Soundboard पेज पर
+                                    <strong>World</strong> और <strong>Only Me</strong> अलग टैब में दिखेंगे।</li>
+                                <li><i class="fa-solid fa-download" style="color:#fee75c"></i> World साउंड को
+                                    <strong>Import</strong> बटन से अपनी लोकल लाइब्रेरी में लें।</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="guide-step-num">३</div>
+                        <div class="guide-step-icon" style="background: linear-gradient(135deg,#00b0f4,#0077aa)"><i
+                                class="fa-solid fa-headphones"></i></div>
+                        <div class="guide-step-content">
+                            <h3>Discord / Game में ऑडियो भेजें (VB-Cable)</h3>
+                            <ul class="guide-list">
+                                <li><i class="fa-solid fa-download"></i> मुफ़्त ड्राइवर डाउनलोड करें: <a
+                                        href="https://vb-audio.com/Cable/" target="_blank"
+                                        style="color:var(--cyan);text-decoration:underline">vb-audio.com/Cable</a></li>
+                                <li><i class="fa-solid fa-arrow-right"></i> हेडर Output ड्रॉपडाउन में → <strong
+                                        style="color:var(--cyan)">CABLE Input</strong> चुनें।</li>
+                                <li><i class="fa-solid fa-arrow-right"></i> Discord/Game Settings में Microphone →
+                                    <strong style="color:var(--cyan)">CABLE Output</strong> सेट करें।</li>
+                            </ul>
+                            <div class="guide-mode-cards">
+                                <div class="guide-mode-pill red"><i class="fa-solid fa-microphone-slash"></i> Sound Only
+                                    Mic — आपकी आवाज़ बंद, सिर्फ साउंड बोर्ड जाएगा</div>
+                                <div class="guide-mode-pill green"><i class="fa-solid fa-microphone"></i> Dual Voice +
+                                    Sound — आपकी आवाज़ + साउंड एक साथ!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="guide-step-card">
+                        <div class="guide-step-num">४</div>
+                        <div class="guide-step-icon" style="background: linear-gradient(135deg,#fee75c,#c4a800)"><i
+                                class="fa-solid fa-shield-halved"></i></div>
+                        <div class="guide-step-content">
+                            <h3>Admin Mode — मास्टर कंट्रोल</h3>
+                            <ul class="guide-list">
+                                <li><i class="fa-solid fa-lock"></i> हेडर में <strong>Admin Mode</strong> बटन पर क्लिक
+                                    करें।</li>
+                                <li><i class="fa-solid fa-key"></i> डिफ़ॉल्ट पासकोड: <kbd>UG1</kbd> — पहले लॉगिन के बाद
+                                    बदल लें।</li>
+                                <li><i class="fa-solid fa-crown" style="color:#fee75c"></i> Admin, World साउंड को Edit व
+                                    Delete कर सकता है।</li>
+                                <li><i class="fa-solid fa-ban" style="color:#f23f43"></i> सामान्य यूज़र World साउंड नहीं
+                                    बदल सकते — सुरक्षित!</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Edit Sound Modal (For Only-Me sounds or Admin editing World sounds) -->
+    <div class="modal-overlay" id="editModalOverlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-pen-to-square"></i> Edit Sound</h3>
+                <button class="modal-close-btn" id="closeEditModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editSoundId">
+                <div class="form-group">
+                    <label for="editSoundName">Sound Name</label>
+                    <input type="text" id="editSoundName" maxlength="30">
+                </div>
+                <div class="form-group">
+                    <label>Emoji Icon</label>
+                    <div class="selected-emoji-display">
+                        <span class="current-emoji" id="editEmojiDisplay">🔊</span>
+                        <input type="text" id="editEmojiInput" placeholder="Emoji..." maxlength="5">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Hotkey Shortcut</label>
+                    <input type="text" id="editShortcutInput" placeholder="Press key..." readonly>
+                    <button type="button" class="btn-text-sm" id="editClearShortcutBtn">Clear Key</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="deleteSoundBtn">
+                    <i class="fa-solid fa-trash-can"></i> Delete Sound
+                </button>
+                <button class="btn btn-primary" id="saveEditBtn">
+                    <i class="fa-solid fa-check"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Pin Access Modal -->
+    <div class="modal-overlay" id="adminModalOverlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-shield-halved" style="color: #fee75c;"></i> Admin Security Panel</h3>
+                <button class="modal-close-btn" id="closeAdminModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div id="adminLoginView">
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 12px;">Enter your secret
+                        Admin Passcode to unlock master editing & deletion of World Shared sounds.</p>
+                    <div class="form-group">
+                        <label for="adminPinInput"><i class="fa-solid fa-key"></i> Secret Passcode</label>
+                        <input type="password" id="adminPinInput" placeholder="Enter Secret Passcode..."
+                            style="letter-spacing: 3px; font-weight: 800; font-size: 1rem; text-align: center;">
+                    </div>
+                </div>
+
+                <!-- Active Admin Panel View (Visible when logged in) -->
+                <div id="adminActiveView" style="display: none; flex-direction: column; gap: 14px;">
+                    <div
+                        style="background: rgba(35, 165, 90, 0.15); border: 1px solid rgba(35, 165, 90, 0.4); padding: 10px 14px; border-radius: var(--radius-sm); color: #4ade80; font-size: 0.88rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-circle-check"></i> Admin Mode Unlocked
+                    </div>
+                    <div class="form-group">
+                        <label for="newAdminPassInput"><i class="fa-solid fa-lock"></i> Change Admin Passcode</label>
+                        <input type="password" id="newAdminPassInput" placeholder="Enter new strong passcode..."
+                            style="font-size: 0.9rem;">
+                        <button type="button" class="btn btn-secondary btn-sm" id="changePassBtn"
+                            style="margin-top: 6px; align-self: flex-start;">
+                            <i class="fa-solid fa-key"></i> Update Passcode
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="logoutAdminBtn" style="display:none;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Lock Admin
+                </button>
+                <button class="btn btn-primary" id="loginAdminBtn">
+                    <i class="fa-solid fa-unlock"></i> Unlock Admin
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VB-Audio Virtual Cable & Mic Setup Guide Modal -->
+    <div class="modal-overlay" id="vbGuideModalOverlay">
+        <div class="modal-card" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-sliders" style="color: #00b0f4;"></i> Virtual Cable & Mic Routing Guide</h3>
+                <button class="modal-close-btn" id="closeVbGuideModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body"
+                style="gap: 16px; font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary);">
+                
+                <!-- Quick Driver Install Banner -->
+                <div class="driver-download-box">
+                    <div class="driver-info">
+                        <strong><i class="fa-solid fa-bolt" style="color: #fee75c;"></i> Install VB-Audio Cable Driver (Required for Games/Discord)</strong>
+                        <p>Click below to automatically install the Virtual Audio Cable driver on your PC:</p>
+                    </div>
+                    <div class="driver-actions">
+                        <a href="INSTALL_DRIVER.bat" download="INSTALL_DRIVER.bat" class="btn btn-primary btn-sm" id="modalInstallBatBtn">
+                            <i class="fa-solid fa-terminal"></i> 1-Click Auto-Installer (.bat)
+                        </a>
+                        <a href="drivers/vb/VBCABLE_Setup_x64.exe" download="VBCABLE_Setup_x64.exe" class="btn btn-secondary btn-sm" id="modalDownloadExeBtn">
+                            <i class="fa-solid fa-download"></i> Download Setup EXE (64-bit)
+                        </a>
+                    </div>
+                </div>
+
+                <div
+                    style="background: rgba(0, 176, 244, 0.1); border: 1px solid rgba(0, 176, 244, 0.3); border-radius: var(--radius-sm); padding: 12px 16px; color: #fff;">
+                    <strong><i class="fa-solid fa-circle-info" style="color: #00b0f4;"></i> How it works with Games & Discord</strong>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Once installed, route your soundboard and microphone seamlessly:</p>
+                </div>
+
+                <div class="guide-steps-list" style="display: flex; flex-direction: column; gap: 10px;">
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <span
+                            style="background: var(--blurple); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; flex-shrink: 0;">1</span>
+                        <div>
+                            <strong style="color: #fff;">Install Virtual Cable Driver:</strong><br>
+                            Click the button above to run <strong>INSTALL_DRIVER.bat</strong> (or download from <a href="https://vb-audio.com/Cable/" target="_blank" style="color: var(--cyan); text-decoration: underline;">vb-audio.com</a>).
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <span
+                            style="background: var(--blurple); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; flex-shrink: 0;">2</span>
+                        <div>
+                            <strong style="color: #fff;">In Ultra Soundboard (Header above):</strong><br>
+                            Audio Output will auto-select <strong style="color: var(--cyan);">CABLE Input (VB-Audio Virtual Cable)</strong>.
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <span
+                            style="background: var(--blurple); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; flex-shrink: 0;">3</span>
+                        <div>
+                            <strong style="color: #fff;">In Game / Discord Voice Settings:</strong><br>
+                            Set Microphone (Input Device) to <strong style="color: var(--cyan);">CABLE Output (VB-Audio Virtual Cable)</strong>.
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <span
+                            style="background: var(--blurple); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 800; flex-shrink: 0;">4</span>
+                        <div>
+                            <strong style="color: #fff;">Click the Mic Button:</strong><br>
+                            <span style="color: #4ade80;"><strong>1st Click (Dual Voice):</strong> Real Voice + Soundboard play together into Game/Discord!</span><br>
+                            <span style="color: #ff6b6b;"><strong>2nd Click (Sound Only):</strong> Real Voice is muted, ONLY soundboard sounds play into Game!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--border-color); margin: 6px 0;">
+
+                <div>
+                    <h4 style="color: #fff; margin-bottom: 6px;"><i class="fa-solid fa-microphone"></i> Dual Voice vs
+                        Sound Only Mic Modes:</h4>
+                    <ul
+                        style="padding-left: 20px; font-size: 0.84rem; display: flex; flex-direction: column; gap: 6px;">
+                        <li><strong style="color: var(--red);">🎙️ Sound Only Mic:</strong> Mutes your physical mic so
+                            players/friends ONLY hear soundboard sound effects.</li>
+                        <li><strong style="color: var(--green);">🎧 Dual Voice + Sound:</strong> Captures your real
+                            microphone voice AND soundboard effects together in real-time!</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content: flex-end;">
+                <button class="btn btn-primary btn-sm" id="closeVbGuideFooterBtn">Got It!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>Discord Soundboard &bull; Designed & Built with <i class="fa-solid fa-heart" style="color: #f23f43;"></i> by
+            <strong>UG</strong></p>
+    </footer>
+
+    <!-- App JavaScript Files -->
+    <script src="synth.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
